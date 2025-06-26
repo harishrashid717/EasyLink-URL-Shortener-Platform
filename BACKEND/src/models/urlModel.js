@@ -1,12 +1,12 @@
-import { getShortUrlByFullUrl, saveShortUrlFullUrl, updateClickByShortUrl } from "../dao/userDao.js";
-export const findUrlByOriginal = async (url) => {
-  return await getShortUrlByFullUrl(url);
+import { getShortCodeByFullUrl, saveShortCodeFullUrl, updateClickByShortCode } from "../dao/urlDao.js";
+export const shortCodeByFullUrl = async (url) => {
+  return await getShortCodeByFullUrl(url);
 };
 
-export const saveShortUrl = async (shortUrl, url) => {
-  return await saveShortUrlFullUrl(shortUrl, url);
+export const saveShortCode = async (shortCode, url) => {
+  return await saveShortCodeFullUrl(shortCode, url);
 };
 
-export const increaseClicksCountByShortUrl = async(shortUrl) =>{
-  return await updateClickByShortUrl(shortUrl);
+export const increaseClicksCountByShortCode = async(shortCode) =>{
+  return await updateClickByShortCode(shortCode);
 }

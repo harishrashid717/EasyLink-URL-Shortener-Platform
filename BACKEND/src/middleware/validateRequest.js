@@ -1,8 +1,7 @@
-import {body, validationResult} from 'express-validator';
+import {validationResult} from 'express-validator';
 
-export const validators = [body('url').isURL().withMessage('Please enter a valid URL')]
-
-export const urlValidatorMiddleware = (req, res, next)=>{
+const validateRequest = (req, res, next)=>{
+    
     const errors = validationResult(req);
 
     if(!errors.isEmpty()){
@@ -14,4 +13,5 @@ export const urlValidatorMiddleware = (req, res, next)=>{
 
     next();
 };
+export default validateRequest;
 
