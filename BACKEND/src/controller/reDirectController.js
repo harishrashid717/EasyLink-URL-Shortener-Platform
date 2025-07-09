@@ -1,18 +1,26 @@
-import { getFullUrlByShortCode, updateClickByShortCode } from "../dao/urlDao.js";
-import dotenv from 'dotenv'
-dotenv.config();
-const redirectToFullUrl = async (req, res, next) => {
-  try {
-    const shortCode = req.params.shortCode;
-    const fullUrl = await getFullUrlByShortCode(shortCode);
-    if (!fullUrl) {
-      return res.status(404).json({ message: "Short URL not found" });
-    }
-    
-    await updateClickByShortCode(shortCode);
-    res.redirect(302, fullUrl);
-  } catch (error) {
-    next(error);
+import { findFullUrlByShortCode } from "../models/urlModel.js";
+import { handleAnonymousUrlTasks, handleUserUrlTasks } from "../services/redirectUrlsTask.js";
+
+export const anonymousRedirectController = async (shortCode) => {
+  const fullUrl = await findFullUrlByShortCode(shortCode);
+  if (!fullUrl) {
+    const error = new Error("Short URL not found");
+    error.statusCode = 404;
+    throw error;
   }
+
+  await handleAnonymousUrlTasks(shortCode);
+  return fullUrl;
 };
-export default redirectToFullUrl;
+
+export const userRedirectController = async (shortCode, urlId, device) => {
+  const fullUrl = await findFullUrlByShortCode(shortCode);
+  if (!fullUrl) {
+    const error = new Error("Short URL not found");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  await handleUserUrlTasks(shortCode, urlId, device);
+  return fullUrl;
+};

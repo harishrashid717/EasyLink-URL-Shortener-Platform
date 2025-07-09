@@ -1,4 +1,3 @@
-import axios from "axios"
 import axiosInstance from "../utils/axiosInstance";
 const createShortUrl = async(originalUrl)=>{
     try{
@@ -6,8 +5,11 @@ const createShortUrl = async(originalUrl)=>{
         console.log(response.data.shortUrl);
         return response.data.shortUrl;
     }catch(error){
-        const errorMessage = new Error(error.message)
-        return errorMessage;
+           throw new Error(
+      error.response?.data?.message ||
+      error.message ||
+      "Something went wrong while shortening the URL"
+    );
     }
 }
 export default createShortUrl;

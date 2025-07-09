@@ -1,7 +1,8 @@
 import express from 'express';
-import redirectToFullUrl from '../controller/reDirectController.js';
+import findDeviceName from '../middleware/findDeviceNameMiddleware.js';
+import redirectHandler from '../handler/redirectHandler.js';
 const router = express.Router();
 
-router.get('/:shortCode', redirectToFullUrl);
+router.get('/:shortCode', findDeviceName, redirectHandler);
 
 export default router;

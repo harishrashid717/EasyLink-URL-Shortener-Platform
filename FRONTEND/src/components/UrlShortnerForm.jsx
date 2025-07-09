@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import CopyButton from "./Button/CopyButton";
 import createShortUrl from "../api/shortUrl.api";
-import axios from "axios";
-function UrlShortenerForm() {
+
+export default function UrlShortenerForm() {
   const [originalUrl, setOriginalUrl] = useState("");
   const [shortenedUrl, setShortenedUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -14,10 +14,14 @@ function UrlShortenerForm() {
     setError("");
 
     try {
-      const shortUrl = await createShortUrl(originalUrl);
+      const shortUrl = await createShortUrl(originalUrl.trim());
       setShortenedUrl(shortUrl);
     } catch (err) {
-      setError("Error shortening URL: " + err.message);
+      setError(
+        err.response?.data?.message ||
+        err.message ||
+        "Something went wrong"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -25,74 +29,59 @@ function UrlShortenerForm() {
 
   return (
     <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-8">
-          <div className="card">
-            <div className="card-header bg-primary text-white">
-              <h3 className="mb-0">URL Shortener</h3>
-            </div>
-            <div className="card-body">
-              <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label htmlFor="urlInput" className="form-label">
-                    Enter your URL
-                  </label>
-                  <input
-                    type="url"
-                    className="form-control"
-                    id="urlInput"
-                    value={originalUrl}
-                    onChange={(e) => setOriginalUrl(e.target.value)}
-                    placeholder="https://example.com/very-long-url"
-                    required
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <span
-                        className="spinner-border spinner-border-sm me-2"
-                        role="status"
-                        aria-hidden="true"
-                      ></span>
-                      Processing...
-                    </>
-                  ) : (
-                    "Shorten URL"
-                  )}
-                </button>
-              </form>
+      <form
+        onSubmit={handleSubmit}
+        className="d-flex align-items-center gap-2 w-100"
+      >
+        <input
+          type="url"
+          className="form-control form-control-lg flex-grow-1"
+          style={{ flexBasis: "60%" }}
+          placeholder="Paste your long URL"
+          value={originalUrl}
+          onChange={(e) => setOriginalUrl(e.target.value)}
+          required
+        />
+        <button
+          type="submit"
+          className="btn btn-primary btn-lg"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <span
+              className="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
+          ) : (
+            "Shorten It"
+          )}
+        </button>
+      </form>
 
-              {error && (
-                <div className="alert alert-danger mt-3" role="alert">
-                  {error}
-                </div>
-              )}
-
-              {shortenedUrl && (
-                <div className="mt-4">
-                  <h5>Your shortened URL:</h5>
-                  <div className="input-group">
-                    <input
-                      type="text"
-                      className="form-control"
-                      value={shortenedUrl}
-                      readOnly
-                    />
-                   <CopyButton shortenUrl={shortenedUrl}></CopyButton>
-                  </div>
-                </div>
-              )}
-            </div>
+      {/* Error Container */}
+      {error && (
+        <div className="mt-4">
+          <div className="alert alert-danger" role="alert">
+            <strong>Error:</strong> {error}
           </div>
         </div>
-      </div>
+      )}
+
+      {shortenedUrl && (
+        <div className="mt-4">
+          <p className="mb-1">Your shortened URL:</p>
+          <div className="d-flex align-items-center gap-2">
+            <input
+              type="text"
+              className="form-control form-control-lg"
+              value={shortenedUrl}
+              readOnly
+            />
+            <CopyButton shortenUrl={shortenedUrl} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-
-export default UrlShortenerForm;

@@ -1,11 +1,38 @@
 import "./App.css";
-import UrlShortener from "./components/UrlShortnerForm";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Layout from "./components/Layout";
+import Home from "./pages/Home";
+import LoginPage from "./pages/LoginPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
+import Register from "./pages/RegisterPage"; 
+
 function App() {
-  return (
-    <>
-      <UrlShortener></UrlShortener>
-    </>
-  );
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Layout />,
+      children: [
+        {
+          index: true, 
+          element: <Home />,
+        },
+        {
+          path: "analytics", 
+          element: <AnalyticsPage />,
+        },
+        {
+          path: "login",
+          element: <LoginPage />,
+        },
+        {
+          path: "register",
+          element: <Register />,
+        },
+      ],
+    },
+  ]);
+
+  return <RouterProvider router={router} />;
 }
 
 export default App;

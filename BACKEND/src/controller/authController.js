@@ -1,5 +1,6 @@
 import registerUserService from "../services/registerUser.js";
 import loginService from "../services/loginUser.js";
+import {cookieOption} from '../config/cookieOption.js'
 export const registerUser = async (req, res, next) => {
   try {
     const { username, full_name, email, password } = req.body;
@@ -8,7 +9,7 @@ export const registerUser = async (req, res, next) => {
 
     if (newUser) { 
       req.user = newUser;
-      res.cookie('accessToken', token, { sameSite: 'strict' }); 
+      res.cookie('authToken', token, cookieOption); 
       res.status(201).json({ message: 'User successfully registered' });
     } else {
       const error = new Error('Failed to register, try again');
@@ -28,8 +29,8 @@ export const loginUser = async(req, res, next) =>{
 
     if(user){
       req.user = user;
-      res.cookie('authToken', token, { sameSite: 'strict' });
-      res.status(200).json({'message' : "user successfully logined"});
+      res.cookie('authToken', token, cookieOption);
+      res.status(200).json({'message' : "User successfully logined"});
 
     }else{
       const error = new Error('email or password incorrect ');
@@ -37,10 +38,14 @@ export const loginUser = async(req, res, next) =>{
       next(error);
     }
 
-
   }catch(error){
     next(error);
   }
 
 
+}
+
+export const logoutUser = async(req, res, next) =>{
+    res.clearCookie('authToken', cookieOption);
+    res.status(200).json({'message' : 'Logout Success'})
 }
