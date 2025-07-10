@@ -32,7 +32,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Auth Middleware (Optional)
+// Auth Middleware 
 app.use(authOptionalMiddleware);
 
 // Home Route
