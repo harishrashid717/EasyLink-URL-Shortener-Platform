@@ -10,7 +10,7 @@ import {
 } from "../models/userUrlsAnalyticsModel.js";
 import { findFullNameByUserId } from "../models/userModel.js";
 
-const getAnalyticsDashboard = async (req, res, next) => {
+const getUserAnalyticsDashboard = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const { startDate, endDate } = req.body;
@@ -54,4 +54,4 @@ const getAnalyticsDashboard = async (req, res, next) => {
   }
 };
 
-export default getAnalyticsDashboard;
+export default getUserAnalyticsDashboard;
