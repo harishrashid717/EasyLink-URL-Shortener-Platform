@@ -9,7 +9,8 @@ import {
   getTopDateByClicks,
   getDeviceClicksCount ,
   addUrlVisitLog,
-  getUserIdByShortCode
+  getUserIdByShortCode,
+  deleteShortCodeById
 } from "../dao/urlDao.js";
 
 
@@ -59,4 +60,8 @@ export const findDeviceClicksCount = async (urlId) => {
 
 export const updateUrlVisitLog = async(urlId, device) =>{
   return await addUrlVisitLog(urlId, device);
+}
+
+export const deleteShortCodeRow = async(userId)=>{
+  return await deleteShortCodeById(userId);
 }

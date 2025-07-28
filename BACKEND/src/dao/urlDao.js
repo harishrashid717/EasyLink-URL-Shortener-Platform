@@ -46,6 +46,16 @@ export const updateClickByShortCode = async (shortCode) => {
   }
 };
 
+export const deleteShortCodeById = async(userId) =>{
+  try{
+      const sql = "DELETE FROM short_url_table WHERE id = ?";
+      const [result] = await pool.query(sql, [userId]);
+      return result.affectedRows > 0 ? result.affectedRows : null;
+  }catch(error){
+    error.statusCode = 500;
+    throw error;
+  }
+}
 export const getShortCodeId = async (shortCode) => {
   try {
     const sql = "SELECT id FROM short_url_table WHERE short_code = ?";

@@ -1,0 +1,33 @@
+/* TopURLs.module.css */
+
+.tableScroll {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* WebKit Scrollbar */
+.tableScroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tableScroll::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.tableScroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Firefox Scrollbar */
+.tableScroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.stickyHeader th {
+  position: sticky;
+  top: 0;
+  background: #f8f9fa;
+  z-index: 1;
+}

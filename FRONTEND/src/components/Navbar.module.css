@@ -1,0 +1,11 @@
+/* Navbar.module.css */
+
+.navText {
+  font-size: clamp(0.75rem, 1.5vw, 1rem);
+  transition: font-size 0.3s ease;
+}
+
+.iconResponsive {
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  transition: font-size 0.3s ease;
+}

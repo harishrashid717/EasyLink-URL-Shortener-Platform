@@ -1,0 +1,10 @@
+.tableScroll {
+  overflow-x: auto;
+  max-height: 400px;
+}
+
+.stickyHeader th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}

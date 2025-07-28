@@ -29,56 +29,58 @@ export default function UrlShortenerForm() {
 
   return (
     <div className="container mt-5">
-      <form
-        onSubmit={handleSubmit}
-        className="d-flex align-items-center gap-2 w-100"
-      >
-        <input
-          type="url"
-          className="form-control form-control-lg flex-grow-1"
-          style={{ flexBasis: "60%" }}
-          placeholder="Paste your long URL"
-          value={originalUrl}
-          onChange={(e) => setOriginalUrl(e.target.value)}
-          required
-        />
-        <button
-          type="submit"
-          className="btn btn-primary btn-lg"
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <span
-              className="spinner-border spinner-border-sm"
-              role="status"
-              aria-hidden="true"
-            ></span>
-          ) : (
-            "Shorten It"
-          )}
-        </button>
+      {/* Form */}
+      <form onSubmit={handleSubmit}>
+        <div className="input-group input-group-lg">
+          <input
+            type="url"
+            className="form-control rounded-start-3"
+            placeholder="Paste your long URL"
+            value={originalUrl}
+            onChange={(e) => setOriginalUrl(e.target.value)}
+            required
+          />
+          <button
+            type="submit"
+            className="btn btn-primary rounded-end-3"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <span
+                className="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            ) : (
+              "Shorten It"
+            )}
+          </button>
+        </div>
       </form>
 
-      {/* Error Container */}
+      {/* Error */}
       {error && (
-        <div className="mt-4">
-          <div className="alert alert-danger" role="alert">
-            <strong>Error:</strong> {error}
+        <div className="mt-3">
+          <div className="alert alert-danger mb-0" role="alert">
+            <strong>Error:</strong> {error}
           </div>
         </div>
       )}
 
+      {/* Result */}
       {shortenedUrl && (
-        <div className="mt-4">
+        <div className="mt-3">
           <p className="mb-1">Your shortened URL:</p>
-          <div className="d-flex align-items-center gap-2">
+          <div className="input-group input-group-lg">
             <input
               type="text"
-              className="form-control form-control-lg"
+              className="form-control rounded-start-3"
               value={shortenedUrl}
               readOnly
             />
-            <CopyButton shortenUrl={shortenedUrl} />
+            <div className="input-group-append">
+              <CopyButton shortenUrl={shortenedUrl} />
+            </div>
           </div>
         </div>
       )}

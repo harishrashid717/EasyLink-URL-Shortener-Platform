@@ -1,5 +1,14 @@
 import pool from "../db/connections.js";
-
+export const getUserName = async(userId) =>{
+    try{
+        const sqlSelect = 'SELECT full_name FROM users WHERE id = ?';
+        const [rows] = await pool.query(sqlSelect, [userId]);
+        return (rows.length > 0) ? rows[0] : null;
+    }catch(error){
+        error.statusCode = 500;
+        throw error;
+    }
+}
 export const getUserByEmail = async (email) =>{
     try{
         const sqlSelect = 'SELECT id, username, full_name FROM users WHERE email = ?';

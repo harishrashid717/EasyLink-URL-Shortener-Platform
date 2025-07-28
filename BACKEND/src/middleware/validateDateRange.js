@@ -3,16 +3,16 @@ import { fetchFirstAndLastURLDates } from "../models/userUrlsAnalyticsModel.js";
 const validateDateRange = async (req, res, next) => {
   try {
     if (!req.user) {
-      return res.status(401).send("You have to login first");
+      const error = new Error('Unauthorized User');
+      error.statusCode = 401;
+      return next(error);
     }
 
     const userId = req.user.id;
-    let { startDate, endDate } = req.body;
+    let { startDate, endDate } = req.body || {};
 
-    // Get user's first & last URL creation dates
-    const { firstUrlDate, lastUrlDate } = await fetchFirstAndLastURLDates(
-      userId
-    );
+    // Fetch user's first and last URL creation dates
+    const { firstUrlDate, lastUrlDate } = await fetchFirstAndLastURLDates(userId);
 
     if (!firstUrlDate || !lastUrlDate) {
       const error = new Error("No URLs found for this user");
@@ -20,8 +20,16 @@ const validateDateRange = async (req, res, next) => {
       return next(error);
     }
 
-    // Parse helper (makes sure time zone doesn't mess with date logic)
-    const parseDate = (str) => new Date(str + "T00:00:00Z");
+  const parseDate = (str) => {
+  const date = new Date(str);
+  if (isNaN(date)) throw new Error("Invalid date format");
+
+  // Strip time portion
+  date.setUTCHours(0, 0, 0, 0);
+  return date;
+};
+
+
     const formatDate = (date) => date.toISOString().slice(0, 10);
 
     const minDate = parseDate(firstUrlDate);
@@ -30,16 +38,17 @@ const validateDateRange = async (req, res, next) => {
     if (startDate && endDate) {
       const start = parseDate(startDate);
       const end = parseDate(endDate);
-
+      console.log('after the date parse', start , end);
+      
       if (start > end) {
         const error = new Error("Start date must not be after end date.");
         error.statusCode = 400;
         return next(error);
       }
 
-      if (start < minDate || end > maxDate) {
+      if (start.getTime() < minDate.getTime() || end.getTime() > maxDate.getTime()) {
         const error = new Error(
-          `Date range must be within ${firstUrlDate} and ${lastUrlDate}.`
+          `Date range must be within ${formatDate(minDate)} and ${formatDate(maxDate)}.`
         );
         error.statusCode = 400;
         return next(error);
@@ -47,15 +56,17 @@ const validateDateRange = async (req, res, next) => {
 
       req.body.startDate = formatDate(start);
       req.body.endDate = formatDate(end);
+      console.log("after the date format ",req.body.startDate , req.body.endDate);
+      
     } else {
-      // If custom dates not provided, set to full range
+      // Use full available range if not provided
       req.body.startDate = formatDate(minDate);
       req.body.endDate = formatDate(maxDate);
     }
 
     return next();
   } catch (error) {
-    error.statusCode = 500;
+    error.statusCode = error.statusCode || 500;
     return next(error);
   }
 };

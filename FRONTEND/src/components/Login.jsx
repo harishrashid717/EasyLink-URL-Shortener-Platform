@@ -62,9 +62,9 @@ const Login = ({ loginMutation, onClose }) => {
           onClick={handleClose}
         />
         <h2 className="fw-bold text-primary mb-1 text-center">
-          <span className="fw-bold">SHORTIE</span>
+          <span className="fw-bold">EasyLink</span>
         </h2>
-        <p className="text-muted mb-4 text-center">Welcome to SHORTIE</p>
+        <p className="text-muted mb-4 text-center">Welcome to EasyLink</p>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="email" className="form-label">

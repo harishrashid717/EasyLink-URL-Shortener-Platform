@@ -24,16 +24,23 @@ export const getFirstAndLastURLDates = async (userId) => {
 // Summary Cards (Always Filtered)
 export const SummaryCards = async (userId, startDate, endDate) => {
   try {
-    const sql = `
+    let sql = `
       SELECT
         COUNT(*) AS total_urls,
-        COALESCE(SUM(clicks), 0) AS total_clicks,
-        COALESCE(AVG(clicks), 0) AS avg_clicks_per_url
+        COALESCE(ROUND(SUM(clicks), 2), 0) AS total_clicks,
+        COALESCE(ROUND(AVG(clicks), 2), 0) AS avg_clicks_per_url
       FROM short_url_table
       WHERE user_id = ?
-      AND created_at BETWEEN ? AND ?
     `;
-    const [rows] = await pool.query(sql, [userId, startDate, endDate]);
+
+    const params = [userId];
+
+    if (startDate && endDate) {
+      sql += ` AND DATE(created_at) BETWEEN ? AND ?`;
+      params.push(startDate, endDate);
+    }
+
+    const [rows] = await pool.query(sql, params);
     return rows.length > 0 ? rows[0] : null;
   } catch (error) {
     error.statusCode = 500;
@@ -41,18 +48,20 @@ export const SummaryCards = async (userId, startDate, endDate) => {
   }
 };
 
+
 // Top URLs by Clicks (Always Filtered)
 export const TopURLsByClicks = async (userId, startDate, endDate) => {
   try {
     const sql = `
       SELECT
+        id,
         short_code,
         full_url,
         clicks,
         DATE_FORMAT(created_at, '%b %e, %Y') AS created
       FROM short_url_table
       WHERE user_id = ?
-      AND created_at BETWEEN ? AND ?
+      AND DATE(created_at) BETWEEN ? AND ?
       ORDER BY clicks DESC
     `;
     const [rows] = await pool.query(sql, [userId, startDate, endDate]);
@@ -68,7 +77,7 @@ export const ClicksPerDay = async (userId, startDate, endDate) => {
   try {
     const sql = `
       SELECT
-        vl.visited_date AS date,
+        DATE_FORMAT(vl.visited_date, '%Y-%m-%d') AS date,
         COUNT(*) AS clicks
       FROM visited_logs vl
       JOIN short_url_table su ON vl.url_id = su.id

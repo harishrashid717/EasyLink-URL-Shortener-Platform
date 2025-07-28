@@ -1,10 +1,9 @@
 const errorHandler = (err, req, res, next)=>{
     // for development
-    console.log('Error message on the backend', err.message);
-
+    console.log(err.stack);
     const statusCode = err.statusCode || 500;
-
     res.status(statusCode).json({
+        isAuthenticated: req.isAuthenticated || false,
         success : false,
         message : err.message, 
         details : err.details,

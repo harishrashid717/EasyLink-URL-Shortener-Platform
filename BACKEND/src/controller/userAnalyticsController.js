@@ -8,13 +8,14 @@ import {
   getURLCreationTrend,
   getDetailedVisitLogs,
 } from "../models/userUrlsAnalyticsModel.js";
+import { findFullNameByUserId } from "../models/userModel.js";
 
 const getAnalyticsDashboard = async (req, res, next) => {
   try {
     const userId = req.user.id;
     const { startDate, endDate } = req.body;
-
     const [
+      userFullname,
       firstLastDates,
       totalSummary,
       filteredSummary,
@@ -24,6 +25,7 @@ const getAnalyticsDashboard = async (req, res, next) => {
       urlCreationTrend,
       detailedLogs,
     ] = await Promise.all([
+      findFullNameByUserId(userId),
       fetchFirstAndLastURLDates(userId),
       totalSummaryCards(userId),
       getFilterSummaryCards(userId, startDate, endDate),
@@ -35,6 +37,8 @@ const getAnalyticsDashboard = async (req, res, next) => {
     ]);
 
     res.status(200).json({
+      isAuthenticated: req.isAuthenticated || false,
+      userFullname,
       firstLastDates,
       totalSummary,
       filteredSummary,

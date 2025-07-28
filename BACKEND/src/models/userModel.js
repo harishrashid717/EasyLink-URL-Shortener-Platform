@@ -1,4 +1,7 @@
-import {getUserByEmail, userCreate, getHashedPasswordByEmail} from '../dao/userDao.js'
+import {getUserByEmail, userCreate, getHashedPasswordByEmail, getUserName} from '../dao/userDao.js';
+export const findFullNameByUserId = async(userId)=>{
+    return await getUserName(userId)
+}
 export const findUserByEmail= async (email)=>{
     return await getUserByEmail(email);
 }
